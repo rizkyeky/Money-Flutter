@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: pallets['accent1'],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white.withOpacity(0.8),
         title: Text('Money',
           style: TextStyle(
             color: pallets['primary'], 
@@ -64,7 +64,10 @@ class HomePage extends StatelessWidget {
             builder: (_, controller) => DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.6),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24))),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                border: Border.all(color: Colors.white.withOpacity(0.5),),
+                boxShadow: boxShadow
+              ),
               child: ListView(
                 padding: const EdgeInsets.all(24),
                 controller: controller,
@@ -80,28 +83,29 @@ class HomePage extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 24),
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
-                          color: Color(bloc.overview[i]['color'] as int),
-                          borderRadius: BorderRadius.circular(12)
+                          color: Colors.white.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: pallets['primary'].withOpacity(0.2),
+                              offset: const Offset(5,5),
+                              blurRadius: 20
+                            )
+                          ]
                         ),
-                        child: CustomPaint(
-                          painter: OverviewBackground(),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(bloc.overview[i]['label'] as String, 
-                                style: subtitle.copyWith(
-                                  color: Colors.white,
-                                ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(bloc.overview[i]['label'] as String, 
+                              style: subtitle,
+                            ),
+                            Text(bloc.overview[i]['total'].toString(),
+                              style: subtitle.copyWith(
+                                fontWeight: FontWeight.bold
                               ),
-                              Text(bloc.overview[i]['total'].toString(),
-                                style: subtitle.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),).toList()
@@ -111,6 +115,13 @@ class HomePage extends StatelessWidget {
             ),
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        elevation: 0,
+        highlightElevation: 0,
+        backgroundColor: Colors.white.withOpacity(0.8),
+        onPressed: () {},
+        child: Icon(Icons.add, color: pallets['primary'],),
       ),
     );
   }
@@ -122,12 +133,12 @@ class HomeBackground extends CustomPainter {
     final circlePaint1 = Paint()
       ..color = pallets['accent2']
       ..style = PaintingStyle.fill
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 30);
 
     final circlePaint2 = Paint()
       ..color = pallets['accent3']
       ..style = PaintingStyle.fill
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 30);
 
     canvas.drawCircle(Offset(size.width - 80, 100), 90, circlePaint1);
     canvas.drawCircle(Offset(-20, size.height*0.5), 120, circlePaint1);
@@ -141,21 +152,3 @@ class HomeBackground extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-class OverviewBackground extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final circlePaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..style = PaintingStyle.fill;
-
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(size.width, 0), height: 120, width: 160),
-      circlePaint
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
